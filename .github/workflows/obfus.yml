@@ -40,13 +40,7 @@ jobs:
 
       - name: Do obfuscate
         run: |
-          ./node_modules/.bin/javascript-obfuscator ./src/index.js --output ./src/_worker.js \
-            --control-flow-flattening true \
-            --dead-code-injection true \
-            --rename-globals true \
-            --string-array-encoding 'rc4' \
-            --transform-object-keys true \
-            --unicode-escape-sequence true
+          ./node_modules/.bin/javascript-obfuscator ./src/index.js --output ./src/_worker.js --compact true --control-flow-flattening true --control-flow-flattening-threshold 1 --dead-code-injection true --dead-code-injection-threshold 1 --identifier-names-generator hexadecimal --rename-globals true --string-array true --string-array-encoding 'rc4' --string-array-threshold 1 --transform-object-keys true --unicode-escape-sequence true --numbers-to-expressions true --split-strings true
 
       - name: Create assets
         uses: vimtor/action-zip@v1.2
@@ -67,24 +61,24 @@ jobs:
         with:
           subject-path: "${{ env.projName }}.zip"
 
-      - name: Publish Release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: "${{ env.TAG }} ${{ env.DATE }}"
-          tag_name: "${{ env.TAG }}"
-          body: |
-            `${{ env.projName }}.zip` 是 `${{ env.TAG }}` 混淆后的代码
-            SHA256: ${{ env.CHECKSUM }}
-            Action ID: [${{ github.run_id }}](${{ env.actionRunsUrl }}${{ github.run_id }})
+      # - name: Publish Release
+      #   uses: softprops/action-gh-release@v2
+      #   with:
+      #     name: "${{ env.TAG }} ${{ env.DATE }}"
+      #     tag_name: "${{ env.TAG }}"
+      #     body: |
+      #       `${{ env.projName }}.zip` 是 `${{ env.TAG }}` 混淆后的代码
+      #       SHA256: ${{ env.CHECKSUM }}
+      #       Action ID: [${{ github.run_id }}](${{ env.actionRunsUrl }}${{ github.run_id }})
 
-            `Source code (zip)` 里面有明文代码
-            更新日志：[update-log.md](https://github.com/vrnobody/cfxhttp/blob/main/docs/update-log.md)
+      #       `Source code (zip)` 里面有明文代码
+      #       更新日志：[update-log.md](https://github.com/vrnobody/cfxhttp/blob/main/docs/update-log.md)
 
-            这个发布使用 [attestations](https://docs.github.com/zh/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds) 来保证，混淆后的代码没有夹带私货。
-            当然，自己使用明文源代码做混淆更安全。
+      #       这个发布使用 [attestations](https://docs.github.com/zh/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds) 来保证，混淆后的代码没有夹带私货。
+      #       当然，自己使用明文源代码做混淆更安全。
 
-            `${{ env.projName }}.zip` is the obfuscated code of `${{ env.TAG }}`.
-            `Source code (zip)` contains the plain text source code.
-          draft: false
-          prerelease: false
-          files: "${{ env.projName }}.zip"
+      #       `${{ env.projName }}.zip` is the obfuscated code of `${{ env.TAG }}`.
+      #       `Source code (zip)` contains the plain text source code.
+      #     draft: false
+      #     prerelease: false
+      #     files: "${{ env.projName }}.zip"
