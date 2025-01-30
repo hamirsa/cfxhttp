@@ -2,9 +2,9 @@ name: obfuscate
 
 on:
   push:
-    branches:
-      - main
-
+    tags:
+      - '**'  # Push events to every tag including hierarchical tags like v1.0/beta
+  workflow_dispatch: # Trigger manually
 
 jobs:
   build:
@@ -23,12 +23,12 @@ jobs:
       - name: Checkout main
         uses: actions/checkout@v4
 
-      # - name: Checkout latest tag
-      #   run: |
-      #     git fetch --tags --force
-      #     latestTag=$(git describe --tags "$(git rev-list --tags --max-count=1)")
-      #     git checkout $latestTag
-      #     echo "TAG=${latestTag}" >> "$GITHUB_ENV"
+      - name: Checkout latest tag
+        run: |
+          git fetch --tags --force
+          latestTag=$(git describe --tags "$(git rev-list --tags --max-count=1)")
+          git checkout $latestTag
+          echo "TAG=${latestTag}" >> "$GITHUB_ENV"
 
       - name: Setup node.js
         uses: actions/setup-node@v4
